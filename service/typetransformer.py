@@ -7,12 +7,12 @@ def transit_decode(part):
         for key, val in entity.items():
             if isinstance(val, dict) or isinstance(val,list):
                 transit_decode(val)
-            elif isinstance(val, str) and val.startswith("~t"):
+            elif isinstance(val, str) and val.startswith("$"):
                 entity[key]=transit_decode_datetime(val)
     return entity
 
 def transit_decode_datetime(val):
-    if len(val) is 12:
-        return datetime.datetime.strptime(val, '~t%Y-%m-%d').date()
+    if len(val) is 11:
+        return datetime.datetime.strptime(val, '$%Y-%m-%d').date()
     else:
-        return datetime.datetime.strptime(val, '~t%Y-%m-%dT%H:%M:%S.%fZ')
+        return datetime.datetime.strptime(val, '$%Y-%m-%dT%H:%M:%S.%fZ')
