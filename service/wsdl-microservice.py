@@ -5,7 +5,8 @@ from flask import Flask, request, Response
 from requests.auth import HTTPBasicAuth  # or HTTPDigestAuth, or OAuth1, etc.
 from zeep import Client
 from zeep.transports import Transport
-from service import logger, typetransformer
+import logger
+import typetransformer
 import os
 
 rootlogger=logger.Logger()
@@ -16,7 +17,7 @@ requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += os.environ.get('cipher', 
 timeout=int(os.environ.get('timeout', '30'))
 url=os.environ.get('url')
 
-auth = os.environ.get('authentication', None)
+auth = os.environ.get('authentication', "")
 if auth.lower() == "basic":
     rootlogger.info("Using authentication")
     transport = Transport(http_auth=HTTPBasicAuth(os.environ.get('username'), os.environ.get('password')), timeout=timeout)
