@@ -3,6 +3,8 @@
 A small microservice to post data to a SOAP endpoint.
 All entities must have a "_soapheaders" attribute.
 
+[![Build Status](https://travis-ci.org/sesam-community/sesam-ntlm-adapter.svg?branch=master)](https://travis-ci.org/sesam-community/sesam-ntlm-adapter)
+
 ##### Example entity
 ```
 {
