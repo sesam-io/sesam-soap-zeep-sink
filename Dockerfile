@@ -10,5 +10,5 @@ RUN pip install --upgrade pip
 RUN pip install -r /service/requirements.txt
 
 EXPOSE 5001/tcp
-ENTRYPOINT ["python"]
-CMD ["./service/wsdl-microservice.py"]
+
+CMD ["python3", "-u", "./service/wsdl-microservice.py"]
