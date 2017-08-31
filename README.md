@@ -47,3 +47,25 @@ All entities must have a "_soapheaders" attribute.
   }
 }
 ```
+##### Example configuration JWT:
+
+```
+{
+  "_id": "soap-service",
+  "type": "system:microservice",
+  "docker": {
+    "environment": {
+      "method": "createMedarbeiderEntity",
+      "url": "http://localhost:8088/MedarbeiderAdapterV1_1?WSDL",
+      "secret": "somesecret",
+      "delay_seconds": "400",
+      "issuer": "theIssuer",
+      "timeout": 30,
+      "cipher": ":ECDHE-RSA-AES128-SHA",
+      "transit_decode": "true"
+    },
+    "image": "sesambuild/soap-zeep-sink:latest",
+    "port": 5001
+  }
+}
+```
