@@ -29,10 +29,10 @@ class JWTPlugin(Plugin):
 
     def egress(self, envelope, http_headers, operation, binding_options):
         sha256 = hashlib.sha256(etree.tostring(envelope, pretty_print=True))
-        expDate = int(datetime.datetime.timestamp(datetime.datetime.now() + datetime.timedelta(seconds=int(os.environ.get('delay_seconds')))))
-        issuer = os.environ.get('issuer')
+        expDate = int(datetime.datetime.timestamp(datetime.datetime.now() + datetime.timedelta(seconds=int(os.environ.get('jwt_expiry')))))
+        issuer = os.environ.get('jwt_issuer')
 
-        auth =jwt.encode({'sha256': sha256.hexdigest(), 'iss': issuer, 'exp': expDate }, os.environ.get('secret'), algorithm='HS256').decode("utf-8")
+        auth =jwt.encode({'sha256': sha256.hexdigest(), 'iss': issuer, 'exp': expDate }, os.environ.get('jwt_secret'), algorithm='HS256').decode("utf-8")
         http_headers['Authorization'] = 'Bearer ' +  auth
 
         return envelope, http_headers
@@ -45,7 +45,7 @@ else:
     rootlogger.info("Skipping authentication")
     transport = Transport(timeout=timeout)
 
-if os.environ.get('secret') is not None:
+if os.environ.get('jwt_secret') is not None:
     rootlogger.info("Using JWT")
     client = Client(url, transport=transport, plugins=[JWTPlugin()])
 else:
