@@ -57,9 +57,9 @@ All entities must have a "_soapheaders" attribute.
     "environment": {
       "method": "createMedarbeiderEntity",
       "url": "http://localhost:8088/MedarbeiderAdapterV1_1?WSDL",
-      "secret": "somesecret",
-      "delay_seconds": "400",
-      "issuer": "theIssuer",
+      "jwt_secret": "somesecret",
+      "jwt_expiry": "400",
+      "jwt_issuer": "theIssuer",
       "timeout": 30,
       "cipher": ":ECDHE-RSA-AES128-SHA",
       "transit_decode": "true"
