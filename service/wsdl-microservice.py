@@ -28,11 +28,11 @@ class JWTPlugin(Plugin):
         return envelope, http_headers
 
     def egress(self, envelope, http_headers, operation, binding_options):
-        sha256 = hashlib.sha256(etree.tostring(envelope, pretty_print=True))
+        sha256 = hashlib.sha256(etree.tostring(envelope))
         expDate = int(datetime.datetime.timestamp(datetime.datetime.now() + datetime.timedelta(seconds=int(os.environ.get('jwt_expiry')))))
         issuer = os.environ.get('jwt_issuer')
 
-        auth =jwt.encode({'sha256': sha256.hexdigest(), 'iss': issuer, 'exp': expDate }, os.environ.get('jwt_secret'), algorithm='HS256').decode("utf-8")
+        auth =jwt.encode({'sha256': sha256.hexdigest(), 'iss': issuer, 'exp': expDate }, os.environ.get('jwt_secret'), algorithm='HS256').decode()
         http_headers['Authorization'] = 'Bearer ' +  auth
 
         return envelope, http_headers
