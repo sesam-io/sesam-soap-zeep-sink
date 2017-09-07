@@ -8,11 +8,6 @@ from zeep.transports import Transport
 import logger
 import typetransformer
 import os
-import jwt
-import hashlib
-import datetime
-from lxml import etree
-from zeep import Plugin
 
 rootlogger=logger.Logger()
 
@@ -22,21 +17,6 @@ requests.packages.urllib3.util.ssl_.DEFAULT_CIPHERS += os.environ.get('cipher', 
 timeout=int(os.environ.get('timeout', '30'))
 url=os.environ.get('url')
 
-class JWTPlugin(Plugin):
-
-    def ingress(self, envelope, http_headers, operation):
-        return envelope, http_headers
-
-    def egress(self, envelope, http_headers, operation, binding_options):
-        sha256 = hashlib.sha256(etree.tostring(envelope))
-        expDate = int(datetime.datetime.timestamp(datetime.datetime.now() + datetime.timedelta(seconds=int(os.environ.get('jwt_expiry')))))
-        issuer = os.environ.get('jwt_issuer')
-
-        auth =jwt.encode({'sha256': sha256.hexdigest(), 'iss': issuer, 'exp': expDate }, os.environ.get('jwt_secret'), algorithm='HS256').decode()
-        http_headers['Authorization'] = 'Bearer ' +  auth
-
-        return envelope, http_headers
-
 auth = os.environ.get('authentication', "")
 if auth.lower() == "basic":
     rootlogger.info("Using authentication")
@@ -45,11 +25,7 @@ else:
     rootlogger.info("Skipping authentication")
     transport = Transport(timeout=timeout)
 
-if os.environ.get('jwt_secret') is not None:
-    rootlogger.info("Using JWT")
-    client = Client(url, transport=transport, plugins=[JWTPlugin()])
-else:
-    client = Client(url, transport=transport)
+client = Client(url, transport=transport)
 ##Receiving soap-object
 @app.route('/', methods=['POST'])
 def push():
