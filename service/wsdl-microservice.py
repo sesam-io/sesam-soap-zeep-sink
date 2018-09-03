@@ -27,8 +27,11 @@ else:
 
 client = Client(url, transport=transport)
 ##Receiving soap-object
-@app.route('/', methods=['POST'])
+@app.route('/<path:path>', methods=['POST'])
 def push():
+
+    if path is None:
+        return Response("Missing path/method to WS", status=500, mimetype='text/plain')
 
     entity = request.get_json()
 
@@ -41,17 +44,17 @@ def push():
 
     rootlogger.info("Finished creating request: " + str(entity))
 
-    response=do_soap(entity,client)
+    response=do_soap(entity,client, path)
     rootlogger.info("SOAPResponse : \n" + str(response) + "\n----End-Response----")
     return Response("Thanks", mimetype='text/plain')
 
-def do_soap(entity, client):
+def do_soap(entity, client, path):
 
     headers = entity['_soapheaders']
     filtered_entity = {i:entity[i] for i in entity if not i.startswith('_') }
     filtered_entity['_soapheaders']=headers
 
-    response = getattr(client.service, os.environ.get('method'))(**filtered_entity)
+    response = getattr(client.service, path)(**filtered_entity)
     return response
 
 if __name__ == '__main__':
